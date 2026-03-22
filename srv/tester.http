@@ -1,0 +1,143 @@
+### It is simple test client browser .
+### Three hash to start new call
+### This is the test of hello world service
+
+http://localhost:4004/odata/v4/MyService/anubhav(name='Bhagya')
+
+### consume service document - describe what are entities part of my service
+http://localhost:4004/odata/v4/CatalogService
+
+### Metadata document of odata service-$metadata
+http://localhost:4004/odata/v4/CatalogService/$metadata
+
+### Read all my employee data - select * from emp
+http://localhost:4004/odata/v4/CatalogService/Employeeset
+Authorization: Basic bhagya:Welcome1
+
+### Read only relavent fields from employee - select ID , nameFirst .. from employee
+http://localhost:4004/odata/v4/CatalogService/Employeeset?$select=ID,nameFirst,sex,email
+
+### get total count of employee records - $count
+http://localhost:4004/odata/v4/CatalogService/Employeeset/$count
+
+### pagination - load data chunk by chunk for performance - $top $skip
+### SELECT * UP TO n rows emp
+ http://localhost:4004/odata/v4/CatalogService/Employeeset?$top=2&$skip=2
+
+### Example testing with V2
+http://localhost:4004/odata/v2/CatalogService/Employeeset?$top=2&$skip=2
+
+
+### Load single employee by key 
+ http://localhost:4004/odata/v4/CatalogService/Employeeset(ID ='02BD2137-0890-1EEA-A6C2-BB55C197C7FB')
+
+### other way 
+ http://localhost:4004/odata/v4/CatalogService/Employeeset/02BD2137-0890-1EEA-A6C2-BB55C197C7FB
+
+### How to filter data based on condition
+### SELECT * FROM where bankName = 'My Bank of San Francisco'
+### eq nq ge le lt gt
+
+ http://localhost:4004/odata/v4/CatalogService/Employeeset?$filter=bankName eq 'My Bank of San Francisco'&$top=2
+
+### can we filter data based on pattern match
+
+http://localhost:4004/odata/v4/CatalogService/Employeeset?$filter=contains(nameFirst, 'Su')
+
+### Sort the data - $orderby SELECT * FROM EMP orderby salaryAmount descending
+http://localhost:4004/odata/v4/CatalogService/Employeeset?$orderby=salaryAmount desc&$top=2
+ 
+### load all purchase order data 
+http://localhost:4004/odata/v4/CatalogService/purchaseOrderSet
+
+### get Single purchase order
+http://localhost:4004/odata/v4/CatalogService/purchaseOrderSet/74867AD200E41EDBA5D8B0C98DD4E052
+
+### Get itemdata for the above purchase order
+http://localhost:4004/odata/v4/CatalogService/purchaseOrderSet/74867AD200E41EDBA5D8B0C98DD4E052/Items
+
+### how to load header and item - parent and child 
+http://localhost:4004/odata/v4/CatalogService/purchaseOrderSet/74867AD200E41EDBA5D8B0C98DD4E052?$expand=Items
+
+###Using CDS view we do lazy loading
+http://localhost:4004/odata/v4/CDSService/ProductSet/74867AD200E41EDBA5D8B06B26EB4052?$expand=To_Items
+### filtering child data
+http://localhost:4004/odata/v4/CDSService/ProductSet/74867AD200E41EDBA5D8B06B26EB4052?$expand=To_Items($filter=TaxAmount le 500)
+
+### creating employee data 
+POST http://localhost:4004/odata/v4/CatalogService/Employeeset
+Authorization: Basic anubhav:Welcome2
+Content-Type: application/json
+
+ {
+     
+      "nameFirst": "Namburi",
+      "nameMiddle": null,
+      "nameLast": "Bhagya Lakshmi",
+      "nameInitials": null,
+      "sex": "F",
+      "language": "E",
+      "PhoneNumber": null,
+      "email": "nbhagyal@gmail.com",
+      "loginName": "SPRINGS",
+      "currency_code": "USD",
+      "salaryAmount": 100000,
+      "accountNumber": "111222444",
+      "bankId": "51000656",
+      "bankName": "My Bank of Antioch"
+    }
+
+### change data - update - copy id created in last call 
+PATCH http://localhost:4004/odata/v4/CatalogService/Employeeset/fa0b4cbc-62b4-4349-9129-326b25e0e58e
+Content-Type: application/json
+
+{
+   "salaryAmount": 19999999
+}
+### Delete data 
+DELETE http://localhost:4004/odata/v4/CatalogService/Employeeset/fa0b4cbc-62b4-4349-9129-326b25e0e58e
+
+### Testing Deep insert 
+POST http://localhost:4004/odata/v4/CatalogService/purchaseOrderSet
+Content-Type: application/json
+
+{
+  "CURRENCY_code": "EUR",
+  "GROSS_AMOUNT": 5922.63,
+  "NET_AMOUNT": 4977.00,
+  "TAX_AMOUNT": 945.63,
+  "NODE_KEY": "74867AD200E41EDBA5D8B0C98DD4E165",
+  "PO_ID": "300005676",
+  "PARTNER_GUID_NODE_KEY": "74867AD200E41EDBA5D8B06885AC0052",
+  "LIFECYCLE_STATUS": "N",
+  "OVERALL_STATUS": "P",
+  "NOTE": "Example for Deep insert",
+  "Items": [
+    {
+      "CURRENCY_code": "EUR",
+      "GROSS_AMOUNT": 1638.63,
+      "NET_AMOUNT": 1377.00,
+      "TAX_AMOUNT": 261.63,
+      "NODE_KEY": "74867AD200E41EDBA5D8B0CC97306555",
+      "PO_ITEM_POS": 10,
+      "PRODUCT_GUID_NODE_KEY": "74867AD200E41EDBA5D8B06B26EC2052"
+    },
+    {
+      "CURRENCY_code": "EUR",
+      "GROSS_AMOUNT": 4284.00,
+      "NET_AMOUNT": 3600.00,
+      "TAX_AMOUNT": 684,
+      "NODE_KEY": "74867AD200E41EDBA5D8B0CC97307555",
+      "PO_ITEM_POS": 20,
+      "PRODUCT_GUID_NODE_KEY": "74867AD200E41EDBA5D8B06B26F76052"
+    }
+  ]
+}
+### Test the function to load top 3 Po's
+http://localhost:4004/odata/v4/CatalogService/getLargestOrder()
+
+### Boost purchase order by 20000 .
+POST http://localhost:4004/odata/v4/CatalogService/purchaseOrderSet/74867AD200E41EDBA5D8B0C98DD4E052/boost
+Content-Type: application/json
+
+{}

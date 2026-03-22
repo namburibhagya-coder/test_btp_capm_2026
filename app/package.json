@@ -1,0 +1,20 @@
+{
+  "name": "mycapapp-ui",
+  "version": "1.0.0",
+  "description": "My life first app with app router with BTP",
+  "main": "index.js",
+  "scripts": {
+    "start": "node node_modules/@sap/approuter/approuter.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fiori",
+    "app",
+    "router"
+  ],
+  "author": "Bhagya Lakshmi",
+  "license": "ISC",
+  "dependencies": {
+    "@sap/approuter": "^21.1.0"
+  }
+}

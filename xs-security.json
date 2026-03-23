@@ -35,7 +35,7 @@
       "description": "View all POs and employees data",
       "default-role-name": "Viewer: Authorized to Read All Pos and employee data",
       "scope-references": [
-        "$XSAPPNAME.Display"
+        "$XSAPPNAME.Viewer"
       ],
       "attribute-references": [
         {
